@@ -1,8 +1,9 @@
-Q1. Your form sends data with POST rather than GET. Explain what would go wrong if it used GET instead. Your answer should say something about what a browser does when a page is refreshed.
-Answer: if the form is use GET, all the input data would be appended to the URL as a query string. Refreshing a page simply re-requests the same URL, and the browser does this silently for GET requests since it considers them harmless. That means every refresh would resubmit the exact same data and create a duplicate record.
+G1. Which column did you turn into a table, and why that one and not another?
+Answer: I made the category table because my products is only use a few categories like Snacks, Canned Goods, Beverages and others and the same ones keep repeating across the rows so it made sense to store each one once and the price, stock and availability are just plain values, so they didn't need their own table.
 
-Q2. When validation fails, your controller does not run the code that saves the record — and you did not write an if statement to stop it. Explain what actually stops it, and where the visitor ends up.
-Answer: the validation call itself stops execution. When a rule fails it throws a validationexception internally, and since I never catch that exception, the rest of the method save and redirect lines simply never runs. 
+G2. What number did screenshot 6 show, and why exactly that number?
+Answer: It showed 7 beacuse the one query is loaded the 6 products and then one more query ran for each
+product to fetch its category so it became a 1 + 6 = 7. After I added with('category') it dropped to queries 2.
 
-Q3. Your success message is displayed from the layout, which renders on every page. Explain why it does not appear on every page.
-Answer: the check lives in the layout, but the data it checks the session('success') this is only set right after a successful save and using ->with('success', 'Product added successfully!') the session flash data like this is only available for the very next request.
+G3. Your belongsTo method is named in the singular. What would break if you made it plural?
+Answer: the eloquent takes the method name and adds _id on the category to find the foreign key column. If I named it categories() probably it would look for categories_id which doesn't exist in my products table so the relationship would fail.

@@ -32,20 +32,18 @@
             </div>
             <div class="mb-3">
                 <label class="form-label" for="category">Category</label>
-                <select name="category" class="form-select">
+                <select name="category_id" class="form-select">
                     <option value="">Select Category</option>
-                    <option value="Canned Goods" @selected(old('category') == 'Canned Goods')>Canned Goods</option>
-                    <option value="Instant Noodles" @selected(old('category') == 'Instant Noodles')>Instant Noodles</option>
-                    <option value="Beverages" @selected(old('category') == 'Beverages')>Beverages</option>
-                    <option value="Alcoholic Beverages" @selected(old('category') == 'Alcoholic Beverages')>Alcoholic Beverages</option>
-                    <option value="Snacks" @selected(old('category') == 'Snacks')>Snacks</option>
+                    @foreach ($categories as $cat)
+                    <option value="{{ $cat->id }}" @selected(old('category_id') == $cat->id)>{{ $cat->name }}</option>
+                    @endforeach
                 </select>
-                @error('category')
+                @error('category_id')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
                 @enderror
             </div>
             <button type="submit">Save Product</button>
-            <a href="{{route('products.index')}}" class="btn btn=secondary">Cancel</a>
+            <a href="{{route('products.index')}}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

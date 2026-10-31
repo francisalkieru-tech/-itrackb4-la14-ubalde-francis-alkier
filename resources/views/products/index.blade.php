@@ -11,7 +11,7 @@
             <span class="badge bg-light text-dark border">Showing all products</span>
             @else
             @if($category)
-            <span class="badge bg-info text-dark">Category: {{ $category }}</span>
+            <span class="badge bg-info text-dark">Category: {{ $categories->firstWhere('id', $category)?->name }}</span>
             @endif
             
             @if($stock)
@@ -23,18 +23,12 @@
         <div class="mb-2">
             <strong>Category:</strong>
 
-            <a href="{{ route('products.index', ['stock' => $stock]) }}"
-               class="btn btn-sm {{ !$category ? 'btn-primary' : '' }}">All</a>
-            <a href="{{ route('products.index', ['category' => 'Canned Goods', 'stock' => $stock]) }}"
-               class="btn btn-sm {{ $category == 'Canned Goods' ? 'btn-primary' : '' }}">Canned Goods</a>
-            <a href="{{ route('products.index', ['category' => 'Instant Noodles', 'stock' => $stock]) }}"
-               class="btn btn-sm {{ $category == 'Instant Noodles' ? 'btn-primary' : '' }}">Instant Noodles</a>
-            <a href="{{ route('products.index', ['category' => 'Beverages', 'stock' => $stock]) }}"
-               class="btn btn-sm {{ $category == 'Beverages' ? 'btn-primary' : '' }}">Beverages</a>
-            <a href="{{ route('products.index', ['category' => 'Alcoholic Beverages', 'stock' => $stock]) }}"
-               class="btn btn-sm {{ $category == 'Alcoholic Beverages' ? 'btn-primary' : '' }}">Alcoholic Beverages</a>
-            <a href="{{ route('products.index', ['category' => 'Snacks', 'stock' => $stock]) }}"
-               class="btn btn-sm {{ $category == 'Snacks' ? 'btn-primary' : '' }}">Snacks</a>
+             <a href="{{ route('products.index', ['stock' => $stock]) }}"
+             class="btn btn-sm {{ !$category ? 'btn-primary' : '' }}">All</a>
+             @foreach ($categories as $cat)
+             <a href="{{ route('products.index', ['category' => $cat->id, 'stock' => $stock]) }}"
+             class="btn btn-sm {{ $category == $cat->id ? 'btn-primary' : '' }}">{{ $cat->name }}</a>
+             @endforeach
         </div>
 
         <div class="mb-2">
@@ -69,10 +63,11 @@
                 {{ $product['stock'] }}
             @endif
         </td>
-        <td>{{ $product['category'] }}</td>
+        <td>{{ $product->category->name }}</td>
     </tr>
     @empty
     <tr><td colspan="5">No products are available.</td></tr>
     @endforelse
 </table>
+<p>Queries: {{ count(\Illuminate\Support\Facades\DB::getQueryLog()) }}</p>
 @endsection

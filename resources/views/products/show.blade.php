@@ -19,7 +19,7 @@
                     </tr>
                     <tr>
                         <th scope="row">Category</th>
-                        <td>{{ $product['category'] }}</td>
+                        <td>{{ $product->category->name }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Prepared by</th>

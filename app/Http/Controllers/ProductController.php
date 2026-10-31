@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -15,18 +17,23 @@ class ProductController extends Controller
         $category = $request->query('category', '');
         $stock = $request->query('stock', '');
 
-        $products = Product::all();
+        $categories = Category::all();
+        DB::enableQueryLog();
+
+        $query = Product::with('category');
 
         if($category){
-            $products = $products->where('category', $category);
+            $query = $query->where('category_id', $category);
         }
 
-        if($stock && $stock !== 'all'){
-            $products = $stock === 'low'
-            ? $products->where('stock', '<', 10) : $products->where('stock', '>=', 10);
+        if($stock === 'low'){
+            $query = $query->where('stock', '<', 10); 
+        } elseif ($stock === 'normal'){
+            $query = $query->where('stock', '>=', 10);
         }
+        $products = $query->get();
 
-        return view('products.index', compact('products', 'category', 'stock'));
+        return view('products.index', compact('products', 'categories', 'category', 'stock'));
     }
     
     //return view('products.index', ['products' => $this->products()]);
@@ -36,7 +43,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        return view('products.create', ['categories' => Category::all()]);
     }
 
     /**
@@ -48,7 +55,7 @@ class ProductController extends Controller
             'name' => 'required|max:100',
             'price' => 'required|numeric|min:1|max:1000',
             'stock' => 'required|numeric|max:100',
-            'category' => 'required|in:Canned Goods,Instant Noodles,Beverages,Alcoholic Beverages,Snacks'
+            'category_id' => 'required|exists:categories,id'
         ]);
         Product::create($validated);
 
