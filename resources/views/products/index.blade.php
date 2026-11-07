@@ -50,6 +50,7 @@
         <th>Price</th>
         <th>Stock</th>
         <th>Category</th>
+        <th>Action</th>
     </tr>
     @forelse ($products as $product)
     <tr>
@@ -64,10 +65,17 @@
             @endif
         </td>
         <td>{{ $product->category->name }}</td>
+        <td>
+            <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Edit</a>
+            <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this record?')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
     </tr>
     @empty
-    <tr><td colspan="5">No products are available.</td></tr>
+    <tr><td colspan="6">No products are available.</td></tr>
     @endforelse
 </table>
-<p>Queries: {{ count(\Illuminate\Support\Facades\DB::getQueryLog()) }}</p>
 @endsection

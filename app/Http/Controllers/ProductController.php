@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -57,8 +58,9 @@ class ProductController extends Controller
             'stock' => 'required|numeric|max:100',
             'category_id' => 'required|exists:categories,id'
         ]);
-        Product::create($validated);
+        $product = Product::create($validated);
 
+        Log::info('Product saved', ['id' => $product->id, ]);
         return redirect()
         ->route('products.index')
         ->with('success', 'Product added successfully!');
@@ -67,34 +69,49 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Product $product)
     {
-         $product = Product::findOrFail($id);
-         return view('products.show', compact('product'));
+        $categories = Category::all();
+         return view('products.show', compact('product', 'categories'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Product $product)
     {
-        //
+        $categories = Category::all();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:100',
+            'price' => 'required|numeric|min:1|max:1000',
+            'stock' => 'required|numeric|max:100',
+            'category_id' => 'required|exists:categories,id'
+        ]);
+
+        $product->update($validated);
+
+        return redirect()
+        ->route('products.index')
+        ->with('success', 'Product updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        //
+        abort_if($product->category->products()->count() === 1, 403);
+        
+        $product->delete();
+        return redirect()->route('products.index');
     }
 }
 

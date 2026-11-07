@@ -1,9 +1,10 @@
-G1. Which column did you turn into a table, and why that one and not another?
-Answer: I made the category table because my products is only use a few categories like Snacks, Canned Goods, Beverages and others and the same ones keep repeating across the rows so it made sense to store each one once and the price, stock and availability are just plain values, so they didn't need their own table.
+Question
+G1. Route model binding needs two things to be true. Name both, and say what happens when only one of them is.
+Answer: First is the controller parameter has to be type-hinted with the model class like Product $product and second the parameter name has to match the route segment exactly. So the Route::resource('products') makes the segment {product} that the variable must be $product.
 
-G2. What number did screenshot 6 show, and why exactly that number?
-Answer: It showed 7 beacuse the one query is loaded the 6 products and then one more query ran for each
-product to fetch its category so it became a 1 + 6 = 7. After I added with('category') it dropped to queries 2.
+G2. Your Delete link opened the detail page instead of deleting anything. Explain why.
+Answer: Because a link is can only send a GET request so the destroy route answers delete and show answers GET at the same address. So if the browser sent a GET the laravel matched it to show and the detail page opened. Nothing was deleted and there was no error and a form with @method('DELETE') fixes it because it sends a POST with a hidden field saying the real method is DELETE.
 
-G3. Your belongsTo method is named in the singular. What would break if you made it plural?
-Answer: the eloquent takes the method name and adds _id on the category to find the foreign key column. If I named it categories() probably it would look for categories_id which doesn't exist in my products table so the relationship would fail.
+G3. old() takes a second argument on your edit form. What would break if you left it out, and what would break if you used only it?
+Answer: If I leave it out and write only old('name') the form opens empty because there is nothing to fall back on until a failed submit. so if I use only the record’s value and skip old() a rejected submit throws away what I typed and puts the saved values back. The old('name', $product->name) have does both record’s value on first load, and what I typed after a validation error.
+
