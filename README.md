@@ -1,10 +1,10 @@
+
 Question
-G1. Route model binding needs two things to be true. Name both, and say what happens when only one of them is.
-Answer: First is the controller parameter has to be type-hinted with the model class like Product $product and second the parameter name has to match the route segment exactly. So the Route::resource('products') makes the segment {product} that the variable must be $product.
+H1. The top of your error page named a file inside vendor. Say why that was not where your mistake was, and where the page showed you it actually was. 
+Answer: The file at the top of the error page was in vendor because that is where Laravel stopped and when it could not run the Product::withh(). My mistake is in the extra letter in index() of ProductController.php  which the Exception trace had already opened with that line marked.
 
-G2. Your Delete link opened the detail page instead of deleting anything. Explain why.
-Answer: Because a link is can only send a GET request so the destroy route answers delete and show answers GET at the same address. So if the browser sent a GET the laravel matched it to show and the detail page opened. Nothing was deleted and there was no error and a form with @method('DELETE') fixes it because it sends a POST with a hidden field saying the real method is DELETE.
+H2. You wrote one Log::info line with a context array. Name something it will tell you next month that the error page could not.
+Answer: My Log::info line tells me which product was saved and when. The error page only shows a failure while it happens and cannot show a successful save.
 
-G3. old() takes a second argument on your edit form. What would break if you left it out, and what would break if you used only it?
-Answer: If I leave it out and write only old('name') the form opens empty because there is nothing to fall back on until a failed submit. so if I use only the record’s value and skip old() a rejected submit throws away what I typed and puts the saved values back. The old('name', $product->name) have does both record’s value on first load, and what I typed after a validation error.
-
+H3. Your guard answers with 403 instead of redirecting back with a message. Say when each of the two is the better answer.
+Answer: A 403 is better when the request should never be allowed, like deleting the last product in a category. A redirect with a message is better when the user can correct something and try again, like leaving a field empty.
