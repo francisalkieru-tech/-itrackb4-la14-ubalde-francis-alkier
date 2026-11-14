@@ -15,26 +15,34 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $category = $request->query('category', '');
-        $stock = $request->query('stock', '');
+        $search = $request->query('search');    
+        $category = $request->query('category');
+        $available = $request->query('available');
 
         $categories = Category::all();
-        DB::enableQueryLog();
 
         $query = Product::with('category');
 
-        if($category){
-            $query = $query->where('category_id', $category);
+        if ($search !== null && $search !== '') {
+            $query->where('name', 'like', "%{$search}%");
         }
 
-        if($stock === 'low'){
-            $query = $query->where('stock', '<', 10); 
-        } elseif ($stock === 'normal'){
-            $query = $query->where('stock', '>=', 10);
+        if($category !== null && $category !== ''){
+            $query->where('category_id', $category);
         }
-        $products = $query->get();
 
-        return view('products.index', compact('products', 'categories', 'category', 'stock'));
+        if ($available !== null && $available !== '') {
+            $query->where('is_available', $available);
+        }
+
+        $sort = $request->query('sort', 'name');
+        if (! in_array($sort, ['name', 'price', 'stock'])) {
+            $sort = 'name';
+        }
+
+        $products = $query->orderBy($sort)->paginate(6)->withQueryString();
+
+        return view('products.index', compact('products', 'categories', 'sort'));
     }
     
     //return view('products.index', ['products' => $this->products()]);

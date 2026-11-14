@@ -1,10 +1,8 @@
-
 Question
-H1. The top of your error page named a file inside vendor. Say why that was not where your mistake was, and where the page showed you it actually was. 
-Answer: The file at the top of the error page was in vendor because that is where Laravel stopped and when it could not run the Product::withh(). My mistake is in the extra letter in index() of ProductController.php  which the Exception trace had already opened with that line marked.
+J1. Your HomeController is not a resource controller. Name two things an index() on a resource controller does that yours does not have to.
+Answer: My ProductController's index() is gets the products from the database and splits them into pages with paginate(6) and It also reads search, category, available and sort from the URL to filter and order the list. My HomeController index does none of that its only returns the front page with the product and category counts.
+J2. Your pagination links lost the search term until you added one method. Say what those links contained before, and what the controller therefore received.
+Answer: Before the fix the page links only had ?page=2 so the controller got the page number but no search value and skipped the where('name', 'like', "%{$search}%")line. That is why page 2 showed the full list and an empty search box and adding withQueryString() after paginate(6)fixed it.
 
-H2. You wrote one Log::info line with a context array. Name something it will tell you next month that the error page could not.
-Answer: My Log::info line tells me which product was saved and when. The error page only shows a failure while it happens and cannot show a successful save.
-
-H3. Your guard answers with 403 instead of redirecting back with a message. Say when each of the two is the better answer.
-Answer: A 403 is better when the request should never be allowed, like deleting the last product in a category. A redirect with a message is better when the user can correct something and try again, like leaving a field empty.
+J3. A misspelled sort value does not break your page. Explain why that is worse than an error, and what your allowed list does about it.
+Answer: When I typed ?sort=nmae the page still loaded but the list was not sorted by anything and nothing told me something was wrong. That is worse than an error because nobody would notice it. My allowed list only accepts name, price and stock and anything else falls back to name.

@@ -2,10 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/whoami', function () {
-    return 'Francis Alkier M. Ubalde | 2023-70377 | Block 4c | ITRACKB4 Laravel 12';
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/products/featured', function(){
     return redirect()->route('products.show', 5);

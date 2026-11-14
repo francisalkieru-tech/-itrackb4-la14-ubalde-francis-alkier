@@ -9,7 +9,6 @@
 </head>
 <body>
     <div class= "container mt-4">
-        <h1 class="mb-2">My Product List</h1>
     
     @include('partials._nav')
 

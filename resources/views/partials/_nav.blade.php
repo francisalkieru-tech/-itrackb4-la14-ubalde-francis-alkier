@@ -1,4 +1,23 @@
-<nav class="mb-3">
-    <a class="btn {{ request()->is('products*') ? 'btn-primary' : '' }}" href="{{ route('products.index') }}">Product List</a>
-    <a class="btn {{ request()->is('products/1*') ? 'btn-primary' : '' }}"href="{{ route('products.show', 1) }}">Store Product</a>
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="{{ route('home') }}">My Products Lists records</a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
+                       href="{{ route('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"
+                       href="{{ route('products.index') }}">Products</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>

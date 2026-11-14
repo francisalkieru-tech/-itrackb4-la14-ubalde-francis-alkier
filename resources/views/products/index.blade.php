@@ -4,45 +4,48 @@
 
 @section('content')
 <div class="card mb-3">
-    
     <div class="card-body py-3">
         <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Add New Product</a>
-        @if (!$category && !$stock)
-            <span class="badge bg-light text-dark border">Showing all products</span>
-            @else
-            @if($category)
-            <span class="badge bg-info text-dark">Category: {{ $categories->firstWhere('id', $category)?->name }}</span>
-            @endif
-            
-            @if($stock)
-            <span class="badge bg-warning text-dark">Stock: {{ $stock }}</span>
-            @endif
-        @endif
-        <hr class="my-2">
-        
-        <div class="mb-2">
-            <strong>Category:</strong>
 
-             <a href="{{ route('products.index', ['stock' => $stock]) }}"
-             class="btn btn-sm {{ !$category ? 'btn-primary' : '' }}">All</a>
-             @foreach ($categories as $cat)
-             <a href="{{ route('products.index', ['category' => $cat->id, 'stock' => $stock]) }}"
-             class="btn btn-sm {{ $category == $cat->id ? 'btn-primary' : '' }}">{{ $cat->name }}</a>
-             @endforeach
-        </div>
+        <form method="GET" action="{{ route('products.index') }}" class="row g-2">
+    <div class="col-md-4">
+        <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search product name">
+    </div>
 
-        <div class="mb-2">
-            <strong>Stock:</strong>
-            <a href="{{ route('products.index', ['category' => $category]) }}"
-               class="btn btn-sm {{ !$stock ? 'btn-secondary' : '' }}">All</a>
-            <a href="{{ route('products.index', ['category' => $category, 'stock' => 'low']) }}"
-               class="btn btn-sm {{ $stock == 'low' ? 'btn-secondary' : '' }}">Low</a>
-            <a href="{{ route('products.index', ['category' => $category, 'stock' => 'normal']) }}"
-               class="btn btn-sm {{ $stock == 'normal' ? 'btn-secondary' : '' }}">Normal</a>
-        </div>
+    <div class="col-md-3">
+        <select name="category" class="form-select">
+            <option value="">All categories</option>
+            @foreach ($categories as $cat)
+                <option value="{{ $cat->id }}"
+                    @selected(request('category') == $cat->id)>{{ $cat->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
+    <div class="col-md-2">
+        <select name="available" class="form-select">
+            <option value="">Any status</option>
+            <option value="1" @selected(request('available') === '1')>Available</option>
+            <option value="0" @selected(request('available') === '0')>Unavailable</option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="sort" class="form-select">
+            <option value="name"  @selected($sort === 'name')>Sort by name</option>
+            <option value="price" @selected($sort === 'price')>Sort by price</option>
+            <option value="stock" @selected($sort === 'stock')>Sort by stock</option>
+        </select>
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary">Apply</button>
+        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">Clear</a>
+    </div>
+</form>
     </div>
 </div>
+
 <table class="table table-striped table-bordered">
     <tr>
         <th>No.</th>
@@ -50,11 +53,12 @@
         <th>Price</th>
         <th>Stock</th>
         <th>Category</th>
+        <th>Status</th>
         <th>Action</th>
     </tr>
     @forelse ($products as $product)
     <tr>
-        <td>{{ $loop->iteration }}</td>
+        <td>{{ $products->firstItem() + $loop->index }}</td>
         <td><a href="{{ route('products.show', $product['id']) }}"> {{ $product['name'] }}</a></td>
         <td>{{ $product['price'] }}</td>
         <td>
@@ -66,6 +70,13 @@
         </td>
         <td>{{ $product->category->name }}</td>
         <td>
+            @if ($product->is_available)
+                <span class="badge bg-success">Available</span>
+            @else
+                <span class="badge bg-secondary">Unavailable</span>
+            @endif
+        </td>
+        <td>
             <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Edit</a>
             <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this record?')">
                 @csrf
@@ -75,7 +86,10 @@
         </td>
     </tr>
     @empty
-    <tr><td colspan="6">No products are available.</td></tr>
+    <tr><td colspan="7">No products are available.</td></tr>
     @endforelse
 </table>
+
+{{ $products->links() }}
+
 @endsection
