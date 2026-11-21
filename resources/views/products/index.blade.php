@@ -5,8 +5,9 @@
 @section('content')
 <div class="card mb-3">
     <div class="card-body py-3">
+        @auth
         <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Add New Product</a>
-
+        @endauth
         <form method="GET" action="{{ route('products.index') }}" class="row g-2">
     <div class="col-md-4">
         <input type="text" name="search" value="{{ request('search') }}" class="form-control" placeholder="Search product name">
@@ -54,7 +55,7 @@
         <th>Stock</th>
         <th>Category</th>
         <th>Status</th>
-        <th>Action</th>
+        @auth<th>Action</th>@endauth
     </tr>
     @forelse ($products as $product)
     <tr>
@@ -76,6 +77,7 @@
                 <span class="badge bg-secondary">Unavailable</span>
             @endif
         </td>
+        @auth
         <td>
             <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-warning">Edit</a>
             <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this record?')">
@@ -84,6 +86,7 @@
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
         </td>
+        @endauth
     </tr>
     @empty
     <tr><td colspan="7">No products are available.</td></tr>
